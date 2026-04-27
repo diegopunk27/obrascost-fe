@@ -1,25 +1,31 @@
 import { createTheme } from '@mui/material/styles';
 
 /**
- * Tema MUI genérico para el boilerplate (sin paleta de marca).
- * Ajustá primary/secondary según el producto.
+ * Paleta de marca de ObrasCost: slate oscuro (#1E2835) + ámbar terroso (#BA7517).
+ * Slate evoca industria/trabajo profesional; ámbar remite a materiales de construcción.
  */
 export const appTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#1565c0',
-      light: '#5e92f3',
-      dark: '#003c8f',
+      main: '#1E2835',
+      light: '#3a4a5c',
+      dark: '#0f1620',
+      contrastText: '#ffffff',
     },
     secondary: {
-      main: '#6a1b9a',
-      light: '#9c4dcc',
-      dark: '#38006b',
+      main: '#BA7517',
+      light: '#d49144',
+      dark: '#8a5410',
+      contrastText: '#ffffff',
     },
     background: {
-      default: '#f5f5f5',
+      default: '#F5F2ED',
       paper: '#ffffff',
+    },
+    text: {
+      primary: '#1E2835',
+      secondary: '#5a6573',
     },
   },
   typography: {
