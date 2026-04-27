@@ -1,0 +1,218 @@
+{
+  "structure": {
+    "children": [
+      {
+        "extension": "*"
+      },
+      {
+        "name": "src",
+        "children": [
+          {
+            "name": "modules",
+            "children": [
+              {
+                "name": "/^${{kebab-case}}/",
+                "children": [
+                  {
+                    "ruleId": "components_folder"
+                  },
+                  {
+                    "ruleId": "contexts_folder"
+                  },
+                  {
+                    "ruleId": "hooks"
+                  },
+                  {
+                    "ruleId": "interfaces"
+                  },
+                  {
+                    "ruleId": "pages"
+                  },
+                  {
+                    "ruleId": "services"
+                  },
+                  {
+                    "name": "theme",
+                    "children": [{ "name": "app-theme", "extension": "ts" }]
+                  },
+                  { "name": "index", "extension": "ts" }
+                ]
+              }
+            ]
+          },
+          {
+            "ruleId": "routes"
+          },
+          {
+            "ruleId": "utils"
+          },
+          {
+            "name": "App",
+            "extension": "tsx"
+          },
+          {
+            "name": "main",
+            "extension": "tsx"
+          },
+          {
+            "name": "vite-env.d",
+            "extension": "ts"
+          }
+        ]
+      }
+    ]
+  },
+  "rules": {
+    "components_folder": {
+      "name": "components",
+      "children": [
+        { "ruleId": "component_folder" },
+        { "ruleId": "tests_folder" },
+        { "name": "index", "extension": "ts" }
+      ]
+    },
+    "contexts_folder": {
+      "name": "contexts",
+      "children": [{ "ruleId": "context_folder" }, { "name": "index", "extension": "ts" }]
+    },
+    "hooks": {
+      "name": "hooks",
+      "children": [
+        {
+          "name": "/^use${{PascalCase}}/",
+          "extension": "ts"
+        },
+        {
+          "name": "/^use${{PascalCase}}/",
+          "extension": "tsx"
+        },
+        { "name": "index", "extension": "ts" },
+        { "ruleId": "hooks_tests_folder" }
+      ]
+    },
+    "interfaces": {
+      "name": "interfaces",
+      "children": [{ "ruleId": "interface_folder" }, { "name": "index", "extension": "ts" }]
+    },
+    "pages": {
+      "name": "pages",
+      "children": [{ "ruleId": "page_folder" }, { "name": "index", "extension": "ts" }]
+    },
+    "routes": {
+      "name": "routes",
+      "children": [
+        { "name": "/^${{PascalCase}}.route/", "extension": "tsx" },
+        { "name": "index", "extension": "ts" },
+        { "name": "AppRouter", "extension": "tsx" }
+      ]
+    },
+    "services": {
+      "name": "services",
+      "children": [
+        {
+          "name": "/^${{PascalCase}}.service/",
+          "extension": "ts"
+        },
+        {
+          "name": "Services",
+          "extension": "ts"
+        },
+        { "name": "index", "extension": "ts" }
+      ]
+    },
+    "utils": {
+      "name": "utils",
+      "children": [
+        {
+          "name": "/^${{camelCase}}.util/",
+          "extension": "ts"
+        },
+        { "ruleId": "utils_tests_folder" },
+        { "name": "index", "extension": "ts" }
+      ]
+    },
+    "component_folder": {
+      "name": "/^${{PascalCase}}/",
+      "children": [
+        {
+          "name": "/^${{PascalCase}}.component/",
+          "extension": "tsx"
+        },
+        {
+          "name": "/^${{PascalCase}}/",
+          "extension": "css"
+        },
+        { "name": "index", "extension": "ts" }
+      ]
+    },
+    "context_folder": {
+      "name": "/^${{PascalCase}}/",
+      "children": [
+        {
+          "name": "/^${{PascalCase}}.(context|provider)/",
+          "extension": "ts"
+        },
+        {
+          "name": "/^${{PascalCase}}.(context|provider)/",
+          "extension": "tsx"
+        },
+        { "name": "index", "extension": "ts" }
+      ]
+    },
+    "interface_folder": {
+      "name": "/^${{kebab-case}}/",
+      "children": [
+        {
+          "name": "/^${{PascalCase}}.interface/",
+          "extension": "ts"
+        },
+        {
+          "name": "/^${{kebab-case}}/",
+          "children": [
+            {
+              "name": "/^${{PascalCase}}.interface/",
+              "extension": "ts"
+            },
+            { "name": "index", "extension": "ts" }
+          ]
+        },
+        { "name": "index", "extension": "ts" }
+      ]
+    },
+    "page_folder": {
+      "name": "/^${{PascalCase}}/",
+      "children": [
+        {
+          "name": "/^${{PascalCase}}.interface/",
+          "extension": "ts"
+        },
+        {
+          "name": "/^${{PascalCase}}.(page|component)/",
+          "extension": "tsx"
+        },
+        { "name": "index", "extension": "ts" }
+      ]
+    },
+    "hooks_tests_folder": {
+      "name": "tests",
+      "children": [
+        { "name": "/^use${{PascalCase}}.test/", "extension": "ts" },
+        { "name": "/^use${{PascalCase}}.test/", "extension": "tsx" }
+      ]
+    },
+    "tests_folder": {
+      "name": "tests",
+      "children": [
+        { "name": "/^${{PascalCase}}.test/", "extension": "ts" },
+        { "name": "/^${{PascalCase}}.test/", "extension": "tsx" }
+      ]
+    },
+    "utils_tests_folder": {
+      "name": "tests",
+      "children": [
+        { "name": "/^${{camelCase}}.test/", "extension": "ts" },
+        { "name": "/^${{camelCase}}.test/", "extension": "tsx" }
+      ]
+    }
+  }
+}

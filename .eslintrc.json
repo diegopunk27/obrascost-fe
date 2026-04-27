@@ -1,0 +1,75 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    // "plugin:jsdoc/recommended-typescript", // Querés linteo estricto para jsdoc ? USAR : NO USAR
+    "plugin:react/jsx-runtime", // react --version > 17 ? USAR : NO USAR
+    "prettier"
+  ],
+  "plugins": [
+    "react",
+    "react-refresh",
+    "@typescript-eslint",
+    "react-hooks",
+    "jsdoc",
+    "project-structure"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "react/prop-types": "off",
+    "react/jsx-uses-react": "error",
+    "react/jsx-handler-names": "error",
+    "react/react-in-jsx-scope": "off",
+    "react/sort-comp": "error", // para garantizar orden homogéneo de la estructura interna de los componentes
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "variable",
+        "format": ["UPPER_CASE", "camelCase", "PascalCase"]
+      },
+
+      {
+        "selector": ["function"],
+        "format": ["camelCase", "PascalCase"]
+      },
+      {
+        "selector": ["classMethod", "classProperty", "parameter"],
+        "format": ["camelCase"]
+      },
+      {
+        "selector": ["class", "interface"],
+        "format": ["PascalCase"]
+      }
+    ],
+    "@typescript-eslint/array-type": ["error", { "default": "generic" }],
+    // Naming conventions para los archivos y directorios
+    "project-structure/file-structure": "error",
+
+    // Reglas JSDoc para buenas prácticas de documentación
+    // Antes de apagarlas pensá primero: documentación para hoy, ayuda-memoria para mañana
+    "jsdoc/require-description": "error",
+    "jsdoc/require-returns": "off",
+    "jsdoc/require-param": "error",
+    "jsdoc/require-param-description": "error",
+    "jsdoc/require-param-name": "error",
+    "jsdoc/require-property": "error",
+    "jsdoc/require-property-description": "error",
+    "jsdoc/require-property-name": "error"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "project-structure/config-path": "projectStructure.json"
+  }
+}

@@ -1,0 +1,70 @@
+---
+description: Plantilla y reglas para generar la descripción de Pull Requests (título, motivo, cambios, impacto, archivos clave, tareas relacionadas) usando `git --no-pager diff <rama-destino>`.
+globs:
+alwaysApply: true
+---
+## Generador de Documentación de PR
+
+Vas a recibir una rama con la que te querés mergear (por default tomar `development`). Luego de esto debés hacer por consola un git diff de la rama en la que estás parado con la rama destino.
+
+Una vez que obtenés ese diff debés armar una descripción del PR de la siguiente manera:
+
+1. **Título**:
+   - Si la rama tiene un número de tarea, comenzar con #NUMERO
+   - Ser conciso y descriptivo
+   - Máximo 10 palabras
+
+2. **Motivo de cambio**:
+   - Explicar brevemente qué se está haciendo y por qué
+   - Máximo 3 líneas
+
+3. **Cambios realizados**:
+   - Listar los cambios principales de forma concisa
+   - Enfocarse en el "qué" y no en el "cómo"
+   - Máximo 5 puntos
+
+4. **Impacto**:
+   - Describir el impacto en el usuario final
+   - Máximo 2 puntos
+
+5. **Archivos clave**:
+   - Listar solo los archivos más relevantes
+   - Máximo 5 archivos
+   - Incluir una breve descripción del cambio
+
+6. **Tareas relacionadas**:
+   - Si los commits comienzan con #NRO, listarlos aquí
+   - Formato: #123, #456
+
+IMPORTANTE:
+- Usar: `git --no-pager diff development`
+- Mantener la descripción concisa y enfocada
+- Output en formato markdown
+
+EJEMPLO:
+
+# #123 Nuevo módulo de gestión de usuarios
+
+## Motivo de cambio
+
+Se requiere un módulo para gestionar usuarios desde el panel de administración.
+
+## Cambios realizados
+
+- Nuevo módulo `users` con listado y formulario de edición
+- Hook `useUserForm` para validación del formulario
+- Servicio HTTP para operaciones CRUD
+
+## Impacto
+
+- Los administradores pueden gestionar usuarios desde la UI
+- Reducción del tiempo de operación manual
+
+## Archivos clave
+
+- `src/modules/users/pages/UsersPage.page.tsx`: Página principal del módulo
+- `src/modules/users/hooks/useUserForm.ts`: Lógica de formulario
+
+## Tareas relacionadas
+
+#123

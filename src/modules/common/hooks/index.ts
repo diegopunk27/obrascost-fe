@@ -1,0 +1,1 @@
+export { useDataMutation } from './useDataMutation';

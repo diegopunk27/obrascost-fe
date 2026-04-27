@@ -1,0 +1,63 @@
+@use 'fonts';
+@use 'variables' as *;
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: $white-gray-background !important;
+  color: $text-primary;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.ag-theme-quartz {
+  --ag-header-column-resize-handle-display: block;
+  --ag-header-column-resize-handle-height: 25%;
+  --ag-header-column-resize-handle-color: white;
+  --ag-row-border-width: 1px;
+  --ag-borders: 2px solid;
+  --ag-background-color: #{$white-gray-background};
+}
+
+.ag-theme-quartz .ag-icon-asc,
+.ag-theme-quartz .ag-icon-desc {
+  color: $white;
+}
+
+.ag-root-wrapper {
+  font-size: 0.85rem;
+  font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif;
+}
+
+.ag-root-wrapper .ag-header {
+  background-color: $primary-main;
+}
+
+.ag-root-wrapper .ag-header-cell-label {
+  justify-content: center;
+  color: $white;
+  font-size: medium;
+}
+
+.ag-cell {
+  user-select: text !important;
+}
+
+.ag-tooltip {
+  background-color: rgba(97, 97, 97, 0.92) !important;
+  color: white !important;
+  border-radius: 4px !important;
+  padding: 4px 8px !important;
+  font-size: 0.75rem !important;
+  font-family: 'Source Sans 3', 'Source Sans Pro', sans-serif !important;
+  box-shadow:
+    0px 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0px 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
