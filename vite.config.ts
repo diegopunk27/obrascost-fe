@@ -21,6 +21,10 @@ export default defineConfig({
         __dirname,
         './src/modules/common/interfaces/api/responses/',
       ),
+      '@common-service-models': path.resolve(
+        __dirname,
+        './src/modules/common/interfaces/api/services/',
+      ),
       '@common-services': path.resolve(__dirname, './src/modules/common/services/'),
       '@global-constants': path.resolve(__dirname, './src/modules/global/constants/'),
       '@global-contexts': path.resolve(__dirname, './src/modules/global/contexts/'),

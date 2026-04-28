@@ -1,39 +1,41 @@
 import axios from 'axios';
 
-const ROUTE = process.env.VITE_REACT_APP_URL_BACKEND;
-const headers = {
-  // establecer headers de autorización
-};
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:4000';
 
-axios.interceptors.response.use(
-  (response) => response,
+export const api = axios.create({ baseURL: BASE_URL });
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('obrascost_token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+api.interceptors.response.use(
+  (res) => res,
   (error) => {
-    /* Manejo de errores*/
+    if (error.response?.status === 401) {
+      localStorage.removeItem('obrascost_token');
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   },
 );
 
-export const getData = async (url: string, element = '') => {
-  const response = await axios.get(ROUTE + url + element, { headers });
-  return response.statusText === 'OK' ? response.data : null;
+export const getData = async <T>(url: string): Promise<T> => {
+  const res = await api.get<T>(url);
+  return res.data;
 };
 
-export const putData = async <BodyType>(url: string, body: BodyType) => {
-  const response = await axios.put(ROUTE + url, body, { headers });
-  return response.statusText === 'OK' ? response.data : null;
+export const postData = async <Body, Res = Body>(url: string, body: Body): Promise<Res> => {
+  const res = await api.post<Res>(url, body);
+  return res.data;
 };
 
-export const postData = async <BodyType>(url: string, body: BodyType) => {
-  const response = await axios.post(ROUTE + url, body, { headers });
-  return response.statusText === 'OK' ? response.data : null;
+export const patchData = async <Body, Res = Body>(url: string, body: Body): Promise<Res> => {
+  const res = await api.patch<Res>(url, body);
+  return res.data;
 };
 
-export const deleteData = async (url: string) => {
-  const response = await axios.delete(ROUTE + url, { headers });
-  return response.statusText === 'OK' ? response.data : null;
-};
-
-export const patchData = async <BodyType>(url: string, body: BodyType) => {
-  const response = await axios.patch(ROUTE + url, body, { headers });
-  return response.statusText === 'OK' ? response.data : null;
+export const deleteData = async (url: string): Promise<void> => {
+  await api.delete(url);
 };
