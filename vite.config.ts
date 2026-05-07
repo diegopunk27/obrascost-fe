@@ -36,6 +36,36 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: './vitest.setup.ts',
-    exclude: ['**/node_modules/**', '**/dist/**'],
+    exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/**/*.test.{ts,tsx}',
+        'src/**/*.d.ts',
+        'src/main.tsx',
+        'src/vite-env.d.ts',
+        'src/App.tsx',
+        // Interfaces are type-only, no testable logic
+        'src/modules/common/interfaces/**',
+        // Pages are covered by Playwright E2E tests
+        'src/**/pages/**',
+        // Route wiring has no business logic
+        'src/routes/**',
+        // Boilerplate/example template files (not ObrasCost logic)
+        'src/**/*[Ee]jemplo*',
+        // Pure configuration, no testable logic
+        'src/modules/common/theme/**',
+        // Barrel re-exports
+        'src/**/index.ts',
+        // Axios instance setup (covered by integration tests)
+        'src/modules/common/services/Services.ts',
+        // Generic mutation hook (pre-existing boilerplate pattern)
+        'src/modules/common/hooks/useDataMutation.ts',
+        // Auth context definitions (just createContext and Provider, no logic)
+        'src/**/contexts/**',
+      ],
+    },
   },
 });

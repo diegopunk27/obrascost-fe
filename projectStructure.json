@@ -117,7 +117,8 @@
           "name": "Services",
           "extension": "ts"
         },
-        { "name": "index", "extension": "ts" }
+        { "name": "index", "extension": "ts" },
+        { "ruleId": "utils_tests_folder" }
       ]
     },
     "utils": {
