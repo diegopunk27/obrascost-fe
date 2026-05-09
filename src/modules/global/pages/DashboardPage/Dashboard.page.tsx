@@ -1,5 +1,6 @@
 import { useObras } from '@common-hooks/index';
 import { KpiCard, ObraStatusChip } from '@common-components/index';
+import MoneyInput from '@common-components/MoneyInput/MoneyInput.component';
 import AddIcon from '@mui/icons-material/Add';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -206,13 +207,11 @@ const DashboardPage = () => {
               type="date"
               InputLabelProps={{ shrink: true }}
             />
-            <TextField
+            <MoneyInput
               label="Presupuesto inicial"
               value={form.presupuesto_inicial}
-              onChange={(e) => setForm((f) => ({ ...f, presupuesto_inicial: e.target.value }))}
+              onChange={(v) => setForm((f) => ({ ...f, presupuesto_inicial: v }))}
               fullWidth
-              type="number"
-              inputProps={{ min: 0 }}
             />
             <TextField
               label="Estado"

@@ -1,4 +1,5 @@
 import type { GastoCreate } from '@common-interfaces/Gasto.interface';
+import MoneyInput from '@common-components/MoneyInput/MoneyInput.component';
 import {
   Button,
   Dialog,
@@ -56,14 +57,13 @@ const GastoFormDialog = ({ open, onClose, onSave }: Props) => {
               fullWidth
               inputProps={{ 'data-testid': 'gasto-descripcion' }}
             />
-            <TextField
-              label="Monto ($)"
-              type="number"
+            <MoneyInput
+              label="Monto"
               value={monto}
-              onChange={(e) => setMonto(e.target.value)}
+              onChange={setMonto}
               required
               fullWidth
-              inputProps={{ min: 0.01, step: '0.01', 'data-testid': 'gasto-monto' }}
+              inputProps={{ 'data-testid': 'gasto-monto' }}
             />
             <TextField
               label="Fecha"

@@ -1,5 +1,6 @@
 import type { Rubro, RubroCreate } from '@common-interfaces/Rubro.interface';
 import { useRubros } from '@common-hooks/index';
+import MoneyInput from '@common-components/MoneyInput/MoneyInput.component';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -168,13 +169,12 @@ const RubrosManager = () => {
               multiline
               rows={2}
             />
-            <TextField
+            <MoneyInput
               label="Costo de referencia por m²"
               value={form.costo_referencia_m2}
-              onChange={(e) => setForm((f) => ({ ...f, costo_referencia_m2: e.target.value }))}
+              onChange={(v) => setForm((f) => ({ ...f, costo_referencia_m2: v }))}
               fullWidth
-              type="number"
-              inputProps={{ min: 0, 'data-testid': 'input-rubro-costo' }}
+              inputProps={{ 'data-testid': 'input-rubro-costo' }}
             />
           </Box>
         </DialogContent>
