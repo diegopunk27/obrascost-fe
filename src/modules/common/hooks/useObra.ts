@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import { obrasService } from '@common-services/Obras.service';
 import type { EstimacionResult } from '@common-interfaces/EstimacionResult.interface';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useObra = (id: number | null) => {
   const { data, error, isLoading, mutate } = useSWR(
@@ -10,6 +10,12 @@ export const useObra = (id: number | null) => {
   );
   const [estimacion, setEstimacion] = useState<EstimacionResult | null>(null);
   const [estimando, setEstimando] = useState(false);
+
+  // Reset estimacion when navigating to a different obra
+  useEffect(() => {
+    setEstimacion(null);
+    setEstimando(false);
+  }, [id]);
 
   const estimar = async (conIa = false) => {
     if (!id) return;

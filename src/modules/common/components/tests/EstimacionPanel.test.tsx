@@ -74,7 +74,7 @@ describe('EstimacionPanel', () => {
 
   it('muestra sugerencia IA cuando está presente', () => {
     render(<EstimacionPanel estimacion={mockEstimacionConIA} estimando={false} onEstimar={vi.fn()} />);
-    expect(screen.getByText('Sugerencia IA')).toBeInTheDocument();
+    expect(screen.getByText('Análisis IA')).toBeInTheDocument();
     expect(screen.getByText('Considerar aumento en terminaciones.')).toBeInTheDocument();
   });
 
