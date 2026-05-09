@@ -1,0 +1,14 @@
+[build]
+  command = "yarn install --frozen-lockfile && yarn build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Set in Netlify dashboard → Site settings → Environment variables:
+  # VITE_API_BASE_URL = "https://obrascost-be.onrender.com"
+
+# SPA fallback — every route serves index.html so React Router works
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
