@@ -17,6 +17,7 @@ vi.mock('@common-services/Obras.service', () => ({
 
 import { obrasService } from '@common-services/Obras.service';
 import type { Obra } from '@common-interfaces/Obra.interface';
+import type { EstimacionResult } from '@common-interfaces/EstimacionResult.interface';
 import { useObra } from '../useObra';
 
 const wrapper = ({ children }: { children: ReactNode }) =>
@@ -35,11 +36,13 @@ const mockObra = (): Obra => ({
   presupuesto_inicial: 500000,
 });
 
-const mockEstimacion = {
+const mockEstimacion: EstimacionResult = {
   total_estimado: 6_000_000,
   desglose_por_rubro: { Estructura: 2_000_000, Pintura: 500_000 },
   margen_error_pct: 15,
-  fuente: 'heuristica' as const,
+  fuente: 'heuristica',
+  sugerencia_ia: null,
+  ajuste_recomendado_pct: null,
   alertas: [],
 };
 

@@ -9,6 +9,7 @@ interface Props extends Omit<TextFieldProps, 'onChange' | 'value'> {
 
 const MoneyInput = ({ value, onChange, ...rest }: Props) => (
   <NumericFormat
+    {...(rest as Record<string, unknown>)}
     value={value}
     onValueChange={(values) => onChange(values.value)}
     thousandSeparator="."
@@ -17,7 +18,6 @@ const MoneyInput = ({ value, onChange, ...rest }: Props) => (
     allowNegative={false}
     prefix="$ "
     customInput={TextField}
-    {...rest}
   />
 );
 
