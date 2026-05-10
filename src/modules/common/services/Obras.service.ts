@@ -26,6 +26,10 @@ export class ObrasService {
   async estimar(id: number, conIa = false): Promise<EstimacionResult> {
     return postData<null, EstimacionResult>(`/obras/${id}/estimacion?con_ia=${conIa}`, null);
   }
+
+  async warmupIa(): Promise<{ status: string }> {
+    return postData<null, { status: string }>('/obras/warmup-ia', null);
+  }
 }
 
 export const obrasService = new ObrasService();

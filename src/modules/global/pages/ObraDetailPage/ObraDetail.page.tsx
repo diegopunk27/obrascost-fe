@@ -30,7 +30,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ESTADO_LABELS,
@@ -64,6 +64,15 @@ const ObraDetailPage = () => {
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [snackbar, setSnackbar] = useState<{ msg: string; severity: 'success' | 'error' } | null>(null);
+
+  // Pre-calienta el multi-agente cuando el usuario abre el tab Estimación —
+  // así cuando hace click en "Estimar con IA" el servicio ya está despierto
+  // y no sufre el cold start de Render free tier (~30-50s).
+  useEffect(() => {
+    if (tab === 1) {
+      obrasService.warmupIa().catch(() => undefined);
+    }
+  }, [tab]);
 
   const handleCreateGasto = async (body: GastoCreate) => {
     await createGasto(body);
