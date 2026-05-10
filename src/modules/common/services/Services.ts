@@ -15,7 +15,10 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('obrascost_token');
-      window.location.href = '/login';
+      // Evitar loop si ya estamos en /login
+      if (!window.location.pathname.startsWith('/login')) {
+        window.location.assign('/login?reason=expired');
+      }
     }
     return Promise.reject(error);
   },

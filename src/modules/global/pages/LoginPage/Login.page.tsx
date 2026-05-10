@@ -2,7 +2,12 @@ import { AppContext } from '@global-contexts/AppContext';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { Alert, Box, Button, CircularProgress, TextField, Typography } from '@mui/material';
 import { FormEvent, useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+
+const REASON_MESSAGES: Record<string, string> = {
+  inactivity: 'Tu sesión expiró por inactividad. Volvé a iniciar sesión.',
+  expired: 'Tu sesión expiró. Volvé a iniciar sesión.',
+};
 
 const FEATURES = [
   'Seguimiento de presupuestos y gastos reales',
@@ -61,6 +66,9 @@ const BlueprintDecoration = () => (
 const LoginPage = () => {
   const { login } = useContext(AppContext);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const reason = searchParams.get('reason');
+  const reasonMessage = reason ? REASON_MESSAGES[reason] : null;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -212,6 +220,9 @@ const LoginPage = () => {
           </Typography>
 
           <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            {reasonMessage && !error && (
+              <Alert severity="info" sx={{ borderRadius: 2 }}>{reasonMessage}</Alert>
+            )}
             {error && <Alert severity="error" sx={{ borderRadius: 2 }}>{error}</Alert>}
 
             <TextField

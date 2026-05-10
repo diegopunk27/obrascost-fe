@@ -1,43 +1,100 @@
-import { useObra } from '@common-hooks/index';
-import { useGastos } from '@common-hooks/index';
+import { useObra, useGastos, invalidateObras } from '@common-hooks/index';
 import { EstimacionPanel, GastoFormDialog, ObraStatusChip } from '@common-components/index';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import type { GastoCreate } from '@common-interfaces/Gasto.interface';
+import type { EstadoObra } from '@common-interfaces/Obra.interface';
+import { obrasService } from '@common-services/Obras.service';
 import {
   Alert,
   Box,
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   IconButton,
   List,
   ListItem,
   ListItemText,
+  Menu,
+  MenuItem,
   Paper,
+  Snackbar,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import {
+  ESTADO_LABELS,
+  esEstadoTerminal,
+  getTransicionesValidas,
+} from '@utils/estado-transiciones.util';
 
 const fmt = (n: number) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(n);
+
+const extractApiMessage = (err: unknown): string => {
+  const candidate = err as { response?: { data?: { message?: string; detail?: string } } };
+  return (
+    candidate?.response?.data?.message ??
+    candidate?.response?.data?.detail ??
+    'Ocurrió un error inesperado.'
+  );
+};
 
 const ObraDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const obraId = id ? parseInt(id, 10) : null;
   const navigate = useNavigate();
 
-  const { obra, isLoading, error, estimacion, estimando, estimar } = useObra(obraId);
+  const { obra, isLoading, error, mutate, estimacion, estimando, estimar } = useObra(obraId);
   const { gastos, isLoading: gastosLoading, create: createGasto, remove: removeGasto, total } = useGastos(obraId);
 
   const [tab, setTab] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [estadoMenuAnchor, setEstadoMenuAnchor] = useState<HTMLElement | null>(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [snackbar, setSnackbar] = useState<{ msg: string; severity: 'success' | 'error' } | null>(null);
 
   const handleCreateGasto = async (body: GastoCreate) => {
     await createGasto(body);
+  };
+
+  const handleChangeEstado = async (nuevo: EstadoObra) => {
+    setEstadoMenuAnchor(null);
+    if (!obraId) return;
+    try {
+      await obrasService.update(obraId, { estado: nuevo });
+      await mutate();
+      await invalidateObras();
+      setSnackbar({ msg: `Estado actualizado a "${ESTADO_LABELS[nuevo]}".`, severity: 'success' });
+    } catch (err) {
+      setSnackbar({ msg: extractApiMessage(err), severity: 'error' });
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!obraId) return;
+    setDeleting(true);
+    try {
+      await obrasService.remove(obraId);
+      await invalidateObras();
+      navigate('/dashboard');
+    } catch (err) {
+      setSnackbar({ msg: extractApiMessage(err), severity: 'error' });
+      setConfirmDeleteOpen(false);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   if (isLoading) {
@@ -52,6 +109,10 @@ const ObraDetailPage = () => {
     return <Alert severity="error">No se pudo cargar la obra.</Alert>;
   }
 
+  const transiciones = getTransicionesValidas(obra.estado);
+  const sinTransicionesPosibles = esEstadoTerminal(obra.estado);
+  const puedeEliminar = obra.estado === 'borrador';
+
   return (
     <Box>
       <Box display="flex" alignItems="center" gap={1} mb={1}>
@@ -60,6 +121,53 @@ const ObraDetailPage = () => {
         </IconButton>
         <Typography variant="h5" fontWeight={700}>{obra.nombre}</Typography>
         <ObraStatusChip estado={obra.estado} />
+        <Tooltip
+          title={
+            sinTransicionesPosibles
+              ? 'Estado terminal: no se puede modificar'
+              : 'Cambiar estado'
+          }
+        >
+          <span>
+            <IconButton
+              size="small"
+              disabled={sinTransicionesPosibles}
+              onClick={(e) => setEstadoMenuAnchor(e.currentTarget)}
+              data-testid="btn-cambiar-estado"
+            >
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </span>
+        </Tooltip>
+        <Menu
+          anchorEl={estadoMenuAnchor}
+          open={Boolean(estadoMenuAnchor)}
+          onClose={() => setEstadoMenuAnchor(null)}
+        >
+          {transiciones.map((destino) => (
+            <MenuItem
+              key={destino}
+              onClick={() => handleChangeEstado(destino)}
+              data-testid={`estado-option-${destino}`}
+            >
+              <ObraStatusChip estado={destino} />
+              <Box ml={1.5}>{ESTADO_LABELS[destino]}</Box>
+            </MenuItem>
+          ))}
+        </Menu>
+        <Box flex={1} />
+        {puedeEliminar && (
+          <Tooltip title="Eliminar obra">
+            <IconButton
+              size="small"
+              color="error"
+              onClick={() => setConfirmDeleteOpen(true)}
+              data-testid="btn-eliminar-obra"
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        )}
       </Box>
 
       <Box display="flex" gap={3} mb={3} flexWrap="wrap">
@@ -155,6 +263,51 @@ const ObraDetailPage = () => {
           onEstimar={estimar}
         />
       )}
+
+      <Dialog
+        open={confirmDeleteOpen}
+        onClose={() => setConfirmDeleteOpen(false)}
+        data-testid="dialog-confirmar-eliminar"
+      >
+        <DialogTitle>¿Eliminar esta obra?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Esta acción no se puede deshacer. Solo se pueden eliminar obras en estado «borrador».
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDeleteOpen(false)} disabled={deleting}>
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
+            variant="contained"
+            disabled={deleting}
+            data-testid="btn-confirmar-eliminar"
+          >
+            {deleting ? <CircularProgress size={20} color="inherit" /> : 'Eliminar'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={Boolean(snackbar)}
+        autoHideDuration={5000}
+        onClose={() => setSnackbar(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        {snackbar ? (
+          <Alert
+            severity={snackbar.severity}
+            onClose={() => setSnackbar(null)}
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            {snackbar.msg}
+          </Alert>
+        ) : undefined}
+      </Snackbar>
     </Box>
   );
 };

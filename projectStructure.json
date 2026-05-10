@@ -124,10 +124,8 @@
     "utils": {
       "name": "utils",
       "children": [
-        {
-          "name": "/^${{camelCase}}.util/",
-          "extension": "ts"
-        },
+        { "name": "/^${{camelCase}}.util/", "extension": "ts" },
+        { "name": "/^${{kebab-case}}.util/", "extension": "ts" },
         { "ruleId": "utils_tests_folder" },
         { "name": "index", "extension": "ts" }
       ]
@@ -212,7 +210,9 @@
       "name": "tests",
       "children": [
         { "name": "/^${{camelCase}}.test/", "extension": "ts" },
-        { "name": "/^${{camelCase}}.test/", "extension": "tsx" }
+        { "name": "/^${{camelCase}}.test/", "extension": "tsx" },
+        { "name": "/^${{kebab-case}}.test/", "extension": "ts" },
+        { "name": "/^${{kebab-case}}.test/", "extension": "tsx" }
       ]
     }
   }
