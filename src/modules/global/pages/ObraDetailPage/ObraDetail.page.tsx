@@ -65,9 +65,14 @@ const ObraDetailPage = () => {
   const [deleting, setDeleting] = useState(false);
   const [snackbar, setSnackbar] = useState<{ msg: string; severity: 'success' | 'error' } | null>(null);
 
-  // Pre-calienta el multi-agente cuando el usuario abre el tab Estimación —
-  // así cuando hace click en "Estimar con IA" el servicio ya está despierto
-  // y no sufre el cold start de Render free tier (~30-50s).
+  // Pre-calienta el multi-agente: dispara el ping al montar el detalle
+  // (más tiempo para el spin-up) y de nuevo al abrir el tab Estimación
+  // (refuerzo si el usuario abre el detalle pero tarda en navegar).
+  // Render free tier tarda ~30-50s en despertar; cuanto antes empieza, mejor.
+  useEffect(() => {
+    obrasService.warmupIa().catch(() => undefined);
+  }, []);
+
   useEffect(() => {
     if (tab === 1) {
       obrasService.warmupIa().catch(() => undefined);
