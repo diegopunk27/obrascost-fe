@@ -27,6 +27,7 @@ import {
   Snackbar,
   Tab,
   Tabs,
+  TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -63,6 +64,7 @@ const ObraDetailPage = () => {
   const [estadoMenuAnchor, setEstadoMenuAnchor] = useState<HTMLElement | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [confirmText, setConfirmText] = useState('');
   const [snackbar, setSnackbar] = useState<{ msg: string; severity: 'success' | 'error' } | null>(null);
 
   // Pre-calienta el multi-agente: dispara el ping al montar el detalle
@@ -106,6 +108,7 @@ const ObraDetailPage = () => {
     } catch (err) {
       setSnackbar({ msg: extractApiMessage(err), severity: 'error' });
       setConfirmDeleteOpen(false);
+      setConfirmText('');
     } finally {
       setDeleting(false);
     }
@@ -125,7 +128,13 @@ const ObraDetailPage = () => {
 
   const transiciones = getTransicionesValidas(obra.estado);
   const sinTransicionesPosibles = esEstadoTerminal(obra.estado);
-  const puedeEliminar = obra.estado === 'borrador';
+  const confirmacionValida = confirmText.trim() === obra.nombre.trim();
+
+  const handleCloseConfirmDelete = () => {
+    if (deleting) return;
+    setConfirmDeleteOpen(false);
+    setConfirmText('');
+  };
 
   return (
     <Box>
@@ -170,18 +179,16 @@ const ObraDetailPage = () => {
           ))}
         </Menu>
         <Box flex={1} />
-        {puedeEliminar && (
-          <Tooltip title="Eliminar obra">
-            <IconButton
-              size="small"
-              color="error"
-              onClick={() => setConfirmDeleteOpen(true)}
-              data-testid="btn-eliminar-obra"
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        )}
+        <Tooltip title="Eliminar obra">
+          <IconButton
+            size="small"
+            color="error"
+            onClick={() => setConfirmDeleteOpen(true)}
+            data-testid="btn-eliminar-obra"
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
       </Box>
 
       <Box display="flex" gap={3} mb={3} flexWrap="wrap">
@@ -280,24 +287,53 @@ const ObraDetailPage = () => {
 
       <Dialog
         open={confirmDeleteOpen}
-        onClose={() => setConfirmDeleteOpen(false)}
+        onClose={handleCloseConfirmDelete}
         data-testid="dialog-confirmar-eliminar"
+        fullWidth
+        maxWidth="sm"
       >
         <DialogTitle>¿Eliminar esta obra?</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Esta acción no se puede deshacer. Solo se pueden eliminar obras en estado «borrador».
+          <DialogContentText component="div">
+            Esta acción no se puede deshacer. Se eliminará la obra y todos sus gastos asociados.
+            <Box mt={2} mb={1}>
+              Para confirmar, escribí el nombre exacto de la obra:
+            </Box>
+            <Box
+              px={1.5}
+              py={1}
+              mb={2}
+              sx={{
+                bgcolor: 'grey.100',
+                borderRadius: 1,
+                fontFamily: 'monospace',
+                fontWeight: 600,
+                userSelect: 'none',
+              }}
+            >
+              {obra.nombre}
+            </Box>
           </DialogContentText>
+          <TextField
+            autoFocus
+            fullWidth
+            size="small"
+            placeholder="Escribí el nombre de la obra"
+            value={confirmText}
+            onChange={(e) => setConfirmText(e.target.value)}
+            disabled={deleting}
+            inputProps={{ 'data-testid': 'input-confirmar-eliminar' }}
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmDeleteOpen(false)} disabled={deleting}>
+          <Button onClick={handleCloseConfirmDelete} disabled={deleting}>
             Cancelar
           </Button>
           <Button
             onClick={handleConfirmDelete}
             color="error"
             variant="contained"
-            disabled={deleting}
+            disabled={deleting || !confirmacionValida}
             data-testid="btn-confirmar-eliminar"
           >
             {deleting ? <CircularProgress size={20} color="inherit" /> : 'Eliminar'}
